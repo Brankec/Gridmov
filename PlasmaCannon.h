@@ -10,7 +10,7 @@ public:
 public:
 	void openFire(const sf::Vector2f& playerPosition, float angle, std::vector<Projectile>& projectiles);
 	void update(sf::Vector2f& velocity);
-	void drawBullets(sf::RenderWindow& window, float angle, float dt);
+	void drawBullets(sf::RenderWindow& window, std::vector<Projectile>& projectiles, float angle, float dt);
 
 public:
 	//setup
@@ -26,7 +26,6 @@ private:
 	void setSizeWeapon(int n);
 
 private:
-	std::vector<Projectile> projectiles;
 	sf::Clock m_bulletTimer;
 
 	sf::Texture bulletTexture;

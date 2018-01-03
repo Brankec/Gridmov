@@ -192,19 +192,6 @@ void Player::healthbarPositionnit()
 	for(int i = 1; i < health; i++)
 		healthbar[i].setPosition(sf::Vector2f(440.f + 25.f * (float)i, 695.f));
 }
-//creating a bullet
-void Player::guns(std::vector<Projectile>& bullets)
-{
-	float m_yaw = (180.0f - angle) / 180.0f * 3.14159265358979;
-
-	int speed = 5;
-
-	//if (m_bulletTimer.getElapsedTime().asSeconds() > 0.05)
-	//{
-		//m_bulletTimer.restart();
-		bullets.emplace_back(playerRec.getPosition(), m_yaw, artilleryTexture);
-	//}
-}
 
 void Player::onUpdate(sf::Vector2f& velocity)
 {
@@ -213,18 +200,7 @@ void Player::onUpdate(sf::Vector2f& velocity)
 
 void Player::drawBullets(sf::RenderWindow& window, float angle, float dt)
 {
-	/*
-	for (auto& projectile : projectiles)
-	{
-		projectile.update(angle, dt);
-	}
-	for (auto& projectile : projectiles)
-	{
-		window.setTitle(projectile.pos());
-		projectile.drawBullet(window);
-	}
-	*/
-	cannon.drawBullets(window, angle, dt);
+	cannon.drawBullets(window, projectiles, angle, dt);
 }
 
 void Player::preloadTexture()

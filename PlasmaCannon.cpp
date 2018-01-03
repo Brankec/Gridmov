@@ -22,7 +22,7 @@ void PlasmaCannon::update(sf::Vector2f& velocity)
 	velocity *= 0.97f;
 }
 
-void PlasmaCannon::drawBullets(sf::RenderWindow& window, float angle, float dt)
+void PlasmaCannon::drawBullets(sf::RenderWindow& window, std::vector<Projectile>& projectiles, float angle, float dt)
 {
 
 	for (auto& projectile : projectiles)
@@ -31,7 +31,7 @@ void PlasmaCannon::drawBullets(sf::RenderWindow& window, float angle, float dt)
 	}
 	for (auto& projectile : projectiles)
 	{
-		window.setTitle(projectile.pos());
+		window.setTitle("test");
 		projectile.drawBullet(window);
 	}
 }
