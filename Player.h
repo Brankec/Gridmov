@@ -1,44 +1,61 @@
 #include <SFML\Graphics.hpp>
+#include <math.h>
+#include "PlasmaCannon.h"
+#include "Projectile.h"
+#include "TextureResources.h"
 
 #pragma once
 class Player
 {
 public:
-	Player(int PosX, int PosY, sf::Vector2f size, std::string imageName);
+	Player(int PosX, int PosY, int n, std::string imageName);
 
 public:
 	void image();
 	void setOriginCenter();
-	void execution();
+	void execution(float dt);
+	float lerp(float v0, float v1, float t);
 
-	void Triangular_move();
+	void drawHealth(sf::RenderWindow& window);
+	void hurt(int n);
+	void heal(int n);
+
+	void healthbarPositionnit();
+
+	void guns(std::vector<Projectile>& projectiles);
+	void onUpdate(sf::Vector2f& velocity);
+	void drawBullets(sf::RenderWindow& window, float angle, float dt);
+	void preloadTexture();
 
 public:
+	sf::Texture artilleryTexture;
+
 	sf::RectangleShape playerRec;
 	sf::Texture playerTexture;
+
+	sf::Texture healthTexture;
+	sf::Sprite healthbar[5];
+
+	PlasmaCannon cannon;
+
 	std::string imageName;
 
-	bool execute = false;
+	bool execute;
 
-	int movDistance = 59;
-	int direction = 0;
+	int movDistance;
 	std::string commands;
 	int instructions = 0;
 	int N_inst = 0;
-	int forward = 0;
-	float angle = 0;
+	float angle = 0; //very important for artillery aim
+	float rotation;
 
-//for Triangular move
+	std::vector<Projectile> projectiles;
+	
+	sf::Clock m_bulletTimer;
+
+	int powOfN;
+
 public:
-	float distance = 400;
-	float distanceDECELERATION = 0;
-	float distanceACCELERATION = 0;
-	float time = 3;
-	float timeHALF;
-	float velocityAVG = 0;
-	float velocityMAX = 0;
-	float velocityMIN = 0;
-	float acceleration = 0;
-	float deceleration = 0;
+	int health = 5;
 };
 

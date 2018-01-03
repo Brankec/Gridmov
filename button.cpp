@@ -7,7 +7,7 @@ button::button(int PosX, int PosY, sf::Vector2f size, std::string imageName)
 	this->imageName = imageName;
 	image();
 	buttonRec.setSize(size);
-	buttonRec.setPosition(PosX, PosY);
+	buttonRec.setPosition((float)PosX, (float)PosY);
 }
 
 void button::image()

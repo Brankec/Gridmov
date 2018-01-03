@@ -2,8 +2,14 @@
 
 Map::Map(std::string fileName, int n) : openfile("images/" + fileName + ".txt")
 {
-	this->powOfN = pow(2, n);
+	this->powOfN = (int)pow(2, n);
 	loadTiles();
+	setOriginCenter();
+}
+
+void Map::setOriginCenter()
+{
+	tile.setOrigin(sf::Vector2f(tile.getSize().x / 2, tile.getSize().y / 2));
 }
 
 void Map::loadTiles()
@@ -18,7 +24,7 @@ void Map::loadTiles()
 		if(tileTexture.loadFromFile(tileLocation))
 		tile.setTexture(&tileTexture);
 
-		tile.setSize(sf::Vector2f(powOfN, powOfN));
+		tile.setSize(sf::Vector2f((float)powOfN, (float)powOfN));
 		while (!openfile.eof())
 		{
 			std::string str;
@@ -49,8 +55,9 @@ void Map::setTilePositions(sf::RenderWindow& window)
 		{
 			if (map[i][j].x != -1 && map[i][j].y != -1)
 			{
-				tile.setPosition(i * powOfN, j * powOfN);
-				tile.setTextureRect(sf::IntRect(map[i][j].x * 32, map[i][j].y * 32, 32, 32));
+				tile.setPosition(i * (float)powOfN, j * (float)powOfN);
+				//tile.setTextureRect(sf::IntRect(map[i][j].x * 32, map[i][j].y * 32, 32, 32));
+				tile.setTextureRect(sf::IntRect(0, 0, 405, 411));
 				window.draw(tile);
 			}
 		}

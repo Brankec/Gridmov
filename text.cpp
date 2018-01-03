@@ -12,7 +12,7 @@ void text::loadFont()
 {
 	font.loadFromFile("images/AGENCYR.TTF");
 	Text.setFont(font);
-	Text.setColor(sf::Color(255, 165, 0));
+	Text.setFillColor(sf::Color(255, 165, 0));
 }
 //this is a fixed position for our text
 void text::textPositionSpace()
