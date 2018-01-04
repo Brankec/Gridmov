@@ -15,12 +15,19 @@ void weapon::fire(const sf::Vector2f& playerPosition, float angle, float project
 	projectiles.emplace_back(playerPosition, m_yaw, projectileSpeed, projectileTexture);
 }
 
-void weapon::draw(sf::RenderWindow& window, float angle, float dt)
+void weapon::draw(sf::RenderWindow& window)
+{
+	for (auto& projectile : projectiles)
+	{
+		projectile.drawBullet(window);
+	}
+}
+
+void weapon::update(float angle, float dt)
 {
 	for (auto& projectile : projectiles)
 	{
 		projectile.update(angle, dt);//update its position
 
-		projectile.drawBullet(window);
 	}
 }

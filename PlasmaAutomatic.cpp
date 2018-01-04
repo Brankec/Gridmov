@@ -13,17 +13,17 @@ void PlasmaAutomatic::openFire(const sf::Vector2f& playerPosition, float angle)
 	//}
 }
 
-void PlasmaAutomatic::update(sf::Vector2f& velocity)
-{
-	update(velocity);
-}
-
-void PlasmaAutomatic::drawProjectile(sf::RenderWindow& window, float angle, float dt)
+void PlasmaAutomatic::drawProjectile(sf::RenderWindow& window)
 {
 	//if (amountFired < amountShots)
 	//{
-		draw(window, angle, dt);
+		draw(window);
 	//}
+}
+
+void PlasmaAutomatic::updateProjectile(float angle, float dt)
+{
+	update(angle, dt);
 }
 
 

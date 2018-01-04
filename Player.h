@@ -23,7 +23,8 @@ public:
 
 	void healthbarPositionnit();
 
-	void drawProjectile(sf::RenderWindow& window, float angle, float dt);
+	void drawProjectile(sf::RenderWindow& window);
+	void update(float angle, float dt);
 	void preloadTexture();
 
 public:

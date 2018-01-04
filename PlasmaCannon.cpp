@@ -9,14 +9,14 @@ void PlasmaCannon::openFire(const sf::Vector2f& playerPosition, float angle)
 	fire(playerPosition, angle, projectileSpeed, projectileTexture);
 }
 
-void PlasmaCannon::update(sf::Vector2f& velocity)
+void PlasmaCannon::drawProjectile(sf::RenderWindow& window)
 {
-	update(velocity);
+	draw(window);
 }
 
-void PlasmaCannon::drawProjectile(sf::RenderWindow& window, float angle, float dt)
+void PlasmaCannon::updateProjectile(float angle, float dt)
 {
-	draw(window, angle, dt);
+	update(angle, dt);
 }
 
 

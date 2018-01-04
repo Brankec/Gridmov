@@ -9,8 +9,8 @@ public:
 
 public:
 	void openFire(const sf::Vector2f& playerPosition, float angle);
-	void update(sf::Vector2f& velocity);
-	void drawProjectile(sf::RenderWindow& window, float angle, float dt);
+	void drawProjectile(sf::RenderWindow& window);
+	void updateProjectile(float angle, float dt);
 
 public:
 	//setup

@@ -110,7 +110,8 @@ void draw(sf::RenderWindow& window, float dt)
 	test.setTilePositions(window);
 	goal.setTilePositions(window);
 	//artillery
-	player.drawProjectile(window, player.angle, dt);
+	player.update(player.angle, dt);
+	player.drawProjectile(window);
 
 	window.draw(player.playerRec);
 

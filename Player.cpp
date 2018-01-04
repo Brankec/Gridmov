@@ -143,16 +143,18 @@ void Player::execution(float dt)
 		}
 
 		static bool isFiringAutomatic = false;
-		//automatic.timer += dt;
+		automatic.timer += dt;
 		if (command == PLAYER_SHOOT_AUTOMATIC)
 		{
+			int bullet_counter = 5;
 			if (!isFiringAutomatic)
 			{
 				isFiringAutomatic = true;
 				automatic.openFire(playerRec.getPosition(), angle);
+				bullet_counter--;
 			}
 
-			if (cannon.timer > cannon.timeBetweenShots && isFiringAutomatic)       //ADD DELAY HERE
+			if (cannon.timer > cannon.timeBetweenShots && isFiringAutomatic && bullet_counter >= 0)       //ADD DELAY HERE
 			{
 				cannon.timer = 0;
 				isFiringAutomatic = false;
@@ -199,10 +201,14 @@ void Player::healthbarPositionnit()
 	healthbar.setPosition(sf::Vector2f(440, 695));
 }
 
-void Player::drawProjectile(sf::RenderWindow& window, float angle, float dt)
+void Player::drawProjectile(sf::RenderWindow& window)
 {
-	cannon.drawProjectile(window, angle, dt);
-	automatic.drawProjectile(window, angle, dt);
+	cannon.drawProjectile(window);
+	automatic.drawProjectile(window);
+}
+
+void Player::update(float angle, float dt)
+{
 }
 
 void Player::preloadTexture()
