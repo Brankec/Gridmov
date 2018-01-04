@@ -143,18 +143,15 @@ void Player::execution(float dt)
 		}
 
 		static bool isFiringAutomatic = false;
-		automatic.timer += dt;
 		if (command == PLAYER_SHOOT_AUTOMATIC)
 		{
-			int bullet_counter = 5;
 			if (!isFiringAutomatic)
 			{
-				isFiringAutomatic = true;
-				automatic.openFire(playerRec.getPosition(), angle);
-				bullet_counter--;
+				//isFiringAutomatic = true;
+				automatic.openFire(playerRec.getPosition(), angle, dt, isFiringAutomatic); //1) player position for determing the source of the ammo, 2) angle for the bullet source angle, 3) for delay between shots, 4) for determing setting to true once we fired all bullets
 			}
 
-			if (cannon.timer > cannon.timeBetweenShots && isFiringAutomatic && bullet_counter >= 0)       //ADD DELAY HERE
+			if (isFiringAutomatic)
 			{
 				cannon.timer = 0;
 				isFiringAutomatic = false;
@@ -209,6 +206,8 @@ void Player::drawProjectile(sf::RenderWindow& window)
 
 void Player::update(float angle, float dt)
 {
+	cannon.update(angle, dt);
+	automatic.update(angle, dt);
 }
 
 void Player::preloadTexture()

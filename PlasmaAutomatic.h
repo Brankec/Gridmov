@@ -8,7 +8,7 @@ public:
 	PlasmaAutomatic();
 
 public:
-	void openFire(const sf::Vector2f& playerPosition, float angle);
+	void openFire(const sf::Vector2f& playerPosition, float angle, float dt, bool& isFiring);
 	//void update(sf::Vector2f& velocity);
 	void drawProjectile(sf::RenderWindow& window);
 	void updateProjectile(float angle, float dt);

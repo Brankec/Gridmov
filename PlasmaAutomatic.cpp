@@ -4,13 +4,22 @@ PlasmaAutomatic::PlasmaAutomatic()
 {
 }
 
-void PlasmaAutomatic::openFire(const sf::Vector2f& playerPosition, float angle)
+void PlasmaAutomatic::openFire(const sf::Vector2f& playerPosition, float angle, float dt, bool& isFiring)
 {
-	//if (amountFired < amountShots)
-	//{
+	if (amountFired <= 0)
+	{
+		amountFired = 5;
+		timeBetweenShots = 0;
+	}
+	timeBetweenShots -= dt;
+	if (timeBetweenShots <= 0 && amountFired > 0) {
 		fire(playerPosition, angle, projectileSpeed, projectileTexture);
-		//amountFired++;
-	//}
+		amountFired--;
+		timeBetweenShots = 0.2;
+	}
+	if(amountFired <= 0)
+	isFiring = true;
+
 }
 
 void PlasmaAutomatic::drawProjectile(sf::RenderWindow& window)
@@ -36,13 +45,13 @@ void PlasmaAutomatic::updateProjectile(float angle, float dt)
 void PlasmaAutomatic::Tier1()
 {
 	setTextureWeapon("cannonT1");
-	setTextueProjectile("energyBall");
-	setAudio("Tier1_cannon");
+	setTextueProjectile("AutomaticAmmo");
+	setAudio("Tier1_automatic");
 	//setPosWeapon(playerPosition);
 	setDamage(2);
 	setSizeWeapon(0);
-	setRateOfFire(1);
-	setProjectileSpeed(1000);
+	//setRateOfFire(0.2);
+	setProjectileSpeed(5000);
 	setAmountShotsFired(5);
 }
 

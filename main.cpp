@@ -75,6 +75,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,
 		//LoadTextures();
 		if (player.execute)
 			player.execution(dt.asSeconds());
+		player.update(player.angle, dt.asSeconds());
 		//writing our instructions to a text display
 		instructionText.Text.setString(player.commands);
 		draw(window, dt.asSeconds());
@@ -110,7 +111,6 @@ void draw(sf::RenderWindow& window, float dt)
 	test.setTilePositions(window);
 	goal.setTilePositions(window);
 	//artillery
-	player.update(player.angle, dt);
 	player.drawProjectile(window);
 
 	window.draw(player.playerRec);
