@@ -2,6 +2,7 @@
 #include <math.h>
 #include "PlasmaCannon.h"
 #include "Projectile.h"
+#include "PlasmaAutomatic.h"
 #include "TextureResources.h"
 
 #pragma once
@@ -22,9 +23,7 @@ public:
 
 	void healthbarPositionnit();
 
-	void guns(std::vector<Projectile>& projectiles);
-	void onUpdate(sf::Vector2f& velocity);
-	void drawBullets(sf::RenderWindow& window, float angle, float dt);
+	void drawProjectile(sf::RenderWindow& window, float angle, float dt);
 	void preloadTexture();
 
 public:
@@ -34,9 +33,11 @@ public:
 	sf::Texture playerTexture;
 
 	sf::Texture healthTexture;
-	sf::Sprite healthbar[5];
+	sf::RectangleShape healthbar;
 
+	//artillery
 	PlasmaCannon cannon;
+	PlasmaAutomatic automatic;
 
 	std::string imageName;
 
@@ -49,13 +50,10 @@ public:
 	float angle = 0; //very important for artillery aim
 	float rotation;
 
-	std::vector<Projectile> projectiles;
-	
-	sf::Clock m_bulletTimer;
 
 	int powOfN;
 
 public:
-	int health = 5;
+	float health = 125;
 };
 

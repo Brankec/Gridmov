@@ -1,23 +1,19 @@
 #include "Projectile.h"
 
 
-Projectile::Projectile(const sf::Vector2f& position, float yaw, sf::Texture& texture)
+Projectile::Projectile(const sf::Vector2f& position, float yaw, float projectileSpeed, sf::Texture& texture)
 {
 	bulletRec.setSize({ 50, 50 });
 	bulletRec.setOrigin(bulletRec.getGlobalBounds().width / 2, bulletRec.getGlobalBounds().height / 2);
 
 	bulletRec.setTexture(&texture);
 
-	bulletRec.setPosition(400,400);
+	bulletRec.setPosition(position);
 
-	float x = sin(yaw) * 200;
-	float y = cos(yaw) * 200;
+	float x = sin(yaw) * projectileSpeed;
+	float y = cos(yaw) * projectileSpeed;
 	bulletVelocity = { x, y };
 
-}
-
-Projectile::Projectile()
-{
 }
 
 

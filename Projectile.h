@@ -5,8 +5,7 @@
 class Projectile
 {
     public:
-		Projectile(const sf::Vector2f& position, float yaw, sf::Texture& texture);
-		Projectile();
+		Projectile(const sf::Vector2f& position, float projectileSpeed, float yaw, sf::Texture& texture);
 
     public:
         void update(float angle, float dt);

@@ -4,36 +4,19 @@ PlasmaCannon::PlasmaCannon()
 {
 }
 
-void PlasmaCannon::openFire(const sf::Vector2f& playerPosition, float angle, std::vector<Projectile>& projectiles)
+void PlasmaCannon::openFire(const sf::Vector2f& playerPosition, float angle)
 {
-	float m_yaw = (180.0f - angle) / 180.0f * 3.14159265358979;
-
-	int speed = 5;
-
-	//if (m_bulletTimer.getElapsedTime().asSeconds() > 0.05)
-	//{
-	//m_bulletTimer.restart();
-	projectiles.emplace_back(playerPosition, m_yaw, bulletTexture);
-	//}
+	fire(playerPosition, angle, projectileSpeed, projectileTexture);
 }
 
 void PlasmaCannon::update(sf::Vector2f& velocity)
 {
-	velocity *= 0.97f;
+	update(velocity);
 }
 
-void PlasmaCannon::drawBullets(sf::RenderWindow& window, std::vector<Projectile>& projectiles, float angle, float dt)
+void PlasmaCannon::drawProjectile(sf::RenderWindow& window, float angle, float dt)
 {
-
-	for (auto& projectile : projectiles)
-	{
-		projectile.update(angle, dt);
-	}
-	for (auto& projectile : projectiles)
-	{
-		window.setTitle("test");
-		projectile.drawBullet(window);
-	}
+	draw(window, angle, dt);
 }
 
 
@@ -43,14 +26,16 @@ void PlasmaCannon::drawBullets(sf::RenderWindow& window, std::vector<Projectile>
 
 
 
-void PlasmaCannon::Tier1(sf::Vector2f& playerPosition)
+void PlasmaCannon::Tier1()
 {
 	setTextureWeapon("cannonT1");
-	setTextueProjectile("cannonT1_projectile");
+	setTextueProjectile("energyBall");
 	setAudio("Tier1_cannon");
-	setPosWeapon(playerPosition);
+	//setPosWeapon(playerPosition);
 	setDamage(2);
 	setSizeWeapon(0);
+	setRateOfFire(1);
+	setProjectileSpeed(1000);
 }
 
 
@@ -69,7 +54,7 @@ void PlasmaCannon::setTextureWeapon(std::string imageName)
 
 void PlasmaCannon::setTextueProjectile(std::string imageName)
 {
-	bulletTexture.loadFromFile("images/weapons/" + imageName + ".png");
+	projectileTexture.loadFromFile("images/weapons/" + imageName + ".png");
 }
 
 void PlasmaCannon::setAudio(std::string audioName)
@@ -92,4 +77,14 @@ void PlasmaCannon::setSizeWeapon(int n)
 {
 	int powOfn = pow(2, n);
 	weaponRec.setSize(sf::Vector2f((float)powOfn, (float)powOfn));
+}
+
+void PlasmaCannon::setRateOfFire(float time)
+{ 
+	timeBetweenShots = time;
+}
+
+void PlasmaCannon::setProjectileSpeed(float n)
+{
+	projectileSpeed = n;
 }

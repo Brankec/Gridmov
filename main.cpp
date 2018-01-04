@@ -7,6 +7,8 @@
 #include "Map.h"
 #include "decoration.h"
 
+#include "soundtrack.h"
+
 #include "TextureResources.h" //use this in main just to initialize it and deallocate
 
 void draw(sf::RenderWindow& window, float dt);
@@ -25,6 +27,7 @@ button button1(30, 790, sf::Vector2f(70, 70), "arrowUp"), //(1-2) Position, (3) 
        button2(130, 790, sf::Vector2f(70, 70), "arrowLeft"),
 	   button3(230, 790, sf::Vector2f(70, 70), "arrowRight"),
 	   button4(30, 690, sf::Vector2f(70, 70), "missile"),
+	   button5(130, 690, sf::Vector2f(70, 70), "automaticWeapon"),
 	   executeButton(1090, 770, sf::Vector2f(100, 100), "execute"),
 	   eraseButton(1100, 680, sf::Vector2f(70, 70), "erase");
 
@@ -34,8 +37,13 @@ Map test("Map1", 6), goal("Map2", 6);
 
 sf::View view;
 
+soundtrack sound;
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR    lpCmdLine,_In_ int       nCmdShow) //for removing the console window
 {
+	sound.all_alone(); //choice of music
+
+
 	sf::RenderWindow window(sf::VideoMode(1200, 900), "Gridmov", sf::Style::Titlebar | sf::Style::Close);
 	sf::Mouse mouse;
 
@@ -45,7 +53,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,
 
 	sf::Clock deltaClock;
 	sf::Time dt;
-
 	while (window.isOpen())
 	{
 		dt = deltaClock.restart();
@@ -84,7 +91,8 @@ void isMouseColliding(sf::Window& window, sf::Mouse& mouse, sf::Event& event)
 
 	button3.ifMouseCollideADD(window, mouse, event, player.commands, "r", player.execute);
 
-	button4.ifMouseCollideADD(window, mouse, event, player.commands, "s", player.execute);
+	button4.ifMouseCollideADD(window, mouse, event, player.commands, "C", player.execute);
+	button5.ifMouseCollideADD(window, mouse, event, player.commands, "A", player.execute);
 
 	//erase last instruction
 	eraseButton.ifMouseCollideERASE(window, mouse, event, player.commands, player.execute);
@@ -102,7 +110,7 @@ void draw(sf::RenderWindow& window, float dt)
 	test.setTilePositions(window);
 	goal.setTilePositions(window);
 	//artillery
-	player.drawBullets(window, player.angle, dt);
+	player.drawProjectile(window, player.angle, dt);
 
 	window.draw(player.playerRec);
 
@@ -119,6 +127,7 @@ void draw(sf::RenderWindow& window, float dt)
 	window.draw(button2.buttonRec);
 	window.draw(button3.buttonRec);
 	window.draw(button4.buttonRec);
+	window.draw(button5.buttonRec);
 	window.draw(executeButton.buttonRec);
 	window.draw(eraseButton.buttonRec);
 	window.display();

@@ -2,10 +2,10 @@
 #include "Projectile.h"
 
 #pragma once
-class PlasmaCannon : public weapon
+class PlasmaAutomatic : public weapon
 {
 public:
-	PlasmaCannon();
+	PlasmaAutomatic();
 
 public:
 	void openFire(const sf::Vector2f& playerPosition, float angle);
@@ -28,12 +28,13 @@ private:
 	void setSizeWeapon(int n);
 	void setRateOfFire(float time);
 	void setProjectileSpeed(float n);
+	void setAmountShotsFired(int n);
 
 private:
 	sf::Clock m_projectileTimer;
 
 	sf::Texture projectileTexture;
 
-
+	int amountFired = 0;
 };
 

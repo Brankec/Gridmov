@@ -3,8 +3,8 @@
 Player::Player(int PosX, int PosY, int n, std::string imageName) : 
 	execute(0), rotation(0)
 {
-	//artillery images
-	preloadTexture();
+	cannon.Tier1(); //weapon tier choice ////////////////////////////////////////
+	automatic.Tier1();
 
 	this->powOfN = (int)pow(2, n);
 	movDistance = powOfN;
@@ -18,12 +18,11 @@ Player::Player(int PosX, int PosY, int n, std::string imageName) :
 
 void Player::image() 
 {
-	if (playerTexture.loadFromFile("images/" + imageName + ".png"))
+	if (playerTexture.loadFromFile("images/spaceships/" + imageName + ".png"))
 		playerRec.setTexture(&playerTexture);
 
 	if (healthTexture.loadFromFile("images/healthbar.png"))
-		for (int i = 0; i < health; i++)
-		healthbar[i].setTexture(healthTexture);
+	healthbar.setTexture(&healthTexture);
 }
 
 //by default, in sfml, all "objects" start their position at the top left corner
@@ -45,7 +44,8 @@ void Player::execution(float dt)
 		PLAYER_FORWARD = 1,
 		PLAYER_LEFT = 2,
 		PLAYER_RIGHT = 3,
-		PLAYER_SHOOT = 4
+		PLAYER_SHOOT_CANNON = 4,
+		PLAYER_SHOOT_AUTOMATIC = 5
 	};
 	static int command = 0;
 	if (N_inst <= instructions)
@@ -64,8 +64,11 @@ void Player::execution(float dt)
 			case 'r':
 				command = PLAYER_RIGHT;
 				break;
-			case 's':
-				command = PLAYER_SHOOT;
+			case 'C':
+				command = PLAYER_SHOOT_CANNON;
+				break;
+			case 'A':
+				command = PLAYER_SHOOT_AUTOMATIC;
 				break;
 			default:
 				command = 0;
@@ -119,15 +122,46 @@ void Player::execution(float dt)
 			}
 		}
 
-		if (command == PLAYER_SHOOT)
+		static bool isFiringCannon = false;
+		 cannon.timer += dt;
+		if (command == PLAYER_SHOOT_CANNON)
 		{
-			//guns(projectiles);
-			cannon.openFire(playerRec.getPosition(), angle, projectiles);
-			ImExecuting = false;
-			counter = 0;
-			command = 0;
+			if (!isFiringCannon)
+			{
+				isFiringCannon = true;
+				cannon.openFire(playerRec.getPosition(), angle);
+			}
+
+			if (cannon.timer > cannon.timeBetweenShots && isFiringCannon)       //ADD DELAY HERE
+			{
+				cannon.timer = 0;
+				isFiringCannon = false;
+				ImExecuting = false;
+				counter = 0;
+				command = 0;
+			}
 		}
-		
+
+		static bool isFiringAutomatic = false;
+		//automatic.timer += dt;
+		if (command == PLAYER_SHOOT_AUTOMATIC)
+		{
+			if (!isFiringAutomatic)
+			{
+				isFiringAutomatic = true;
+				automatic.openFire(playerRec.getPosition(), angle);
+			}
+
+			if (cannon.timer > cannon.timeBetweenShots && isFiringAutomatic)       //ADD DELAY HERE
+			{
+				cannon.timer = 0;
+				isFiringAutomatic = false;
+				ImExecuting = false;
+				counter = 0;
+				command = 0;
+			}
+		}
+
 		playerRec.setRotation(rotation);
 	}
 	else
@@ -144,63 +178,31 @@ float Player::lerp(float v0, float v1, float t) {
  
 void Player::drawHealth(sf::RenderWindow& window)
 {
-	switch(health)
-	{
-	case 5:
-		window.draw(healthbar[0]);
-		window.draw(healthbar[1]);
-		window.draw(healthbar[2]);
-		window.draw(healthbar[3]);
-		window.draw(healthbar[4]);
-		break;
-	case 4:
-		window.draw(healthbar[0]);
-		window.draw(healthbar[1]);
-		window.draw(healthbar[2]);
-		window.draw(healthbar[3]);
-		break;
-	case 3:
-		window.draw(healthbar[0]);
-		window.draw(healthbar[1]);
-		window.draw(healthbar[2]);
-		break;
-	case 2:
-		window.draw(healthbar[0]);
-		window.draw(healthbar[1]);
-		break;
-	case 1:
-		window.draw(healthbar[0]);
-		break;
-	}
+	healthbar.setSize(sf::Vector2f(health, 20));  //HEALTH DISPLAY
+	window.draw(healthbar);
 }
 
 void Player::hurt(int n)
 {
 	if(health >= 0)
-	health--;
+	health -= n;
 }
 
 void Player::heal(int n)
 {
 	if (health <= 4)
-		health++;
+		health += n;
 }
 
 void Player::healthbarPositionnit()
 {
-	healthbar[0].setPosition(sf::Vector2f(440, 695));
-	for(int i = 1; i < health; i++)
-		healthbar[i].setPosition(sf::Vector2f(440.f + 25.f * (float)i, 695.f));
+	healthbar.setPosition(sf::Vector2f(440, 695));
 }
 
-void Player::onUpdate(sf::Vector2f& velocity)
+void Player::drawProjectile(sf::RenderWindow& window, float angle, float dt)
 {
-	velocity *= 0.97f;
-}
-
-void Player::drawBullets(sf::RenderWindow& window, float angle, float dt)
-{
-	cannon.drawBullets(window, projectiles, angle, dt);
+	cannon.drawProjectile(window, angle, dt);
+	automatic.drawProjectile(window, angle, dt);
 }
 
 void Player::preloadTexture()
