@@ -4,9 +4,22 @@ PlasmaCannon::PlasmaCannon()
 {
 }
 
-void PlasmaCannon::openFire(const sf::Vector2f& playerPosition, float angle)
+void PlasmaCannon::openFire(const sf::Vector2f& playerPosition, float angle, float dt, bool& isFiring)
 {
-	fire(playerPosition, angle, projectileSpeed, projectileTexture);
+	if (amountFired <= 0)
+	{
+		amountFired = 2;
+		timeBetweenShots = 0;
+	}
+	timeBetweenShots -= dt;
+	if (timeBetweenShots <= 0 && amountFired > 0) {
+		fire(playerPosition, angle, projectileTexture);
+		amountFired--;
+		timeBetweenShots = 1;
+	}
+	if (amountFired <= 0)
+		isFiring = true;
+
 }
 
 void PlasmaCannon::drawProjectile(sf::RenderWindow& window)
@@ -36,6 +49,7 @@ void PlasmaCannon::Tier1()
 	setSizeWeapon(0);
 	setRateOfFire(1);
 	setProjectileSpeed(1000);
+	setProjectileSize({ 70, 70 });
 }
 
 
@@ -87,4 +101,9 @@ void PlasmaCannon::setRateOfFire(float time)
 void PlasmaCannon::setProjectileSpeed(float n)
 {
 	projectileSpeed = n;
+}
+
+void PlasmaCannon::setProjectileSize(sf::Vector2f size)
+{
+	projectileSize = size;
 }

@@ -21,7 +21,7 @@ decoration background("space.png", 0, 0, 1.f, 1.f), //(1) texture name, (2-3) po
 	       monitor("monitor.png"),
 	       plate("plate.png");
 
-Player player(7, 7, 6, "spaceship");//(1-2) Position, (3) size, (4) name of the image
+Player player(3, 3, 7, "spaceship");//(1-2) Position, (3) size, (4) name of the image
 
 button button1(30, 790, sf::Vector2f(70, 70), "arrowUp"), //(1-2) Position, (3) size, (4) name of the image
        button2(130, 790, sf::Vector2f(70, 70), "arrowLeft"),
@@ -36,6 +36,7 @@ text instructionText; //text that will be used for displaying our instructions
 Map test("Map1", 6), goal("Map2", 6);
 
 sf::View view;
+sf::View followPlayer;
 
 soundtrack sound;
 
@@ -43,8 +44,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,
 {
 	sound.all_alone(); //choice of music
 
-
-	sf::RenderWindow window(sf::VideoMode(1200, 900), "Gridmov", sf::Style::Titlebar | sf::Style::Close);
+	sf::Vector2i screenDimensions(1200, 900);
+	sf::RenderWindow window(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Gridmov", sf::Style::Titlebar | sf::Style::Close);
 	sf::Mouse mouse;
 
 	window.setFramerateLimit(120);
@@ -76,6 +77,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,
 		if (player.execute)
 			player.execution(dt.asSeconds());
 		player.update(player.angle, dt.asSeconds());
+
+		//if(player.automatic.projectilePosition().x != NULL)
+		//window.setTitle(std::to_string(player.automatic.projectilePosition().x));
+
 		//writing our instructions to a text display
 		instructionText.Text.setString(player.commands);
 		draw(window, dt.asSeconds());
@@ -106,14 +111,17 @@ void draw(sf::RenderWindow& window, float dt)
 {
 	window.clear();
 	//player zone
+	//window.setView(view);
+	window.draw(background.sprite); 
+	test.setTilePositions(window);//decorations for the background
+
+
 	window.setView(view);
-	window.draw(background.sprite);
-	test.setTilePositions(window);
 	goal.setTilePositions(window);
+	//window.setView(followPlayer);
+	window.draw(player.playerRec);
 	//artillery
 	player.drawProjectile(window);
-
-	window.draw(player.playerRec);
 
 	window.setView(window.getDefaultView());
 	//hud zone
@@ -121,6 +129,7 @@ void draw(sf::RenderWindow& window, float dt)
 	window.draw(monitor.sprite);
 
 	player.drawHealth(window);
+	player.drawFuel(window);
 
 	window.draw(plate.sprite);
 	window.draw(instructionText.Text);

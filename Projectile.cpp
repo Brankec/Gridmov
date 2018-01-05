@@ -1,35 +1,44 @@
 #include "Projectile.h"
 
 
-Projectile::Projectile(const sf::Vector2f& position, float yaw, float projectileSpeed, sf::Texture& texture)
+Projectile::Projectile(const sf::Vector2f& position, float yaw, float projectileSpeed, sf::Vector2f projectileSize, sf::Texture& texture)
 {
-	bulletRec.setSize({ 50, 50 });
-	bulletRec.setOrigin(bulletRec.getGlobalBounds().width / 2, bulletRec.getGlobalBounds().height / 2);
+	projectileRec.setSize(projectileSize);
+	projectileRec.setOrigin(projectileRec.getGlobalBounds().width / 2, projectileRec.getGlobalBounds().height / 2);
 
-	bulletRec.setTexture(&texture);
+	projectileRec.setTexture(&texture);
 
-	bulletRec.setPosition(position);
+	projectileRec.setPosition(position);
 
 	float x = sin(yaw) * projectileSpeed;
 	float y = cos(yaw) * projectileSpeed;
-	bulletVelocity = { x, y };
+	projectileVelocity = { x, y };
 
 }
 
 
 void Projectile::update(float angle, float dt)
 {
-	bulletRec.move(bulletVelocity * dt);
+	projectileRec.move(projectileVelocity * dt);
+	//time += dt;
 }
 
 void Projectile::drawBullet(sf::RenderWindow& window)
 {
-	window.draw(bulletRec);
+	window.draw(projectileRec);
 }
 
-std::string Projectile::pos()
+sf::Vector2f Projectile::pos()
 {
-	return std::to_string(bulletRec.getPosition().y);
+	return sf::Vector2f(projectileRec.getPosition()/64.f);
+}
+
+bool Projectile::isDed()
+{
+	if (age >= ageLimit)
+		return true;
+	else
+		return false;
 }
 
 

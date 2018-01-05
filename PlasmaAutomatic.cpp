@@ -6,16 +6,16 @@ PlasmaAutomatic::PlasmaAutomatic()
 
 void PlasmaAutomatic::openFire(const sf::Vector2f& playerPosition, float angle, float dt, bool& isFiring)
 {
-	if (amountFired <= 0)
+	if (amountFired <= 0)   //multiple shots per instructions
 	{
 		amountFired = 5;
 		timeBetweenShots = 0;
 	}
 	timeBetweenShots -= dt;
 	if (timeBetweenShots <= 0 && amountFired > 0) {
-		fire(playerPosition, angle, projectileSpeed, projectileTexture);
+		fire(playerPosition, angle, projectileTexture);
 		amountFired--;
-		timeBetweenShots = 0.2;
+		timeBetweenShots = 0.15;
 	}
 	if(amountFired <= 0)
 	isFiring = true;
@@ -24,16 +24,21 @@ void PlasmaAutomatic::openFire(const sf::Vector2f& playerPosition, float angle, 
 
 void PlasmaAutomatic::drawProjectile(sf::RenderWindow& window)
 {
-	//if (amountFired < amountShots)
-	//{
 		draw(window);
-	//}
 }
 
 void PlasmaAutomatic::updateProjectile(float angle, float dt)
 {
 	update(angle, dt);
+	age(dt);
 }
+
+sf::Vector2f PlasmaAutomatic::getProjectilePosition()
+{
+	return projectilePosition();
+}
+
+
 
 
 
@@ -51,8 +56,9 @@ void PlasmaAutomatic::Tier1()
 	setDamage(2);
 	setSizeWeapon(0);
 	//setRateOfFire(0.2);
-	setProjectileSpeed(5000);
+	setProjectileSpeed(2000);
 	setAmountShotsFired(5);
+	setProjectileSize({ 50,50 });
 }
 
 
@@ -109,4 +115,9 @@ void PlasmaAutomatic::setProjectileSpeed(float n)
 void PlasmaAutomatic::setAmountShotsFired(int n)
 {
 	amountShots = n;
+}
+
+void PlasmaAutomatic::setProjectileSize(sf::Vector2f size)
+{
+	projectileSize = size;
 }

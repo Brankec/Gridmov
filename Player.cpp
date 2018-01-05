@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(int PosX, int PosY, int n, std::string imageName) : 
+Player::Player( int PosX, int PosY, int n, std::string imageName) : 
 	execute(0), rotation(0)
 {
 	cannon.Tier1(); //weapon tier choice ////////////////////////////////////////
@@ -10,19 +10,37 @@ Player::Player(int PosX, int PosY, int n, std::string imageName) :
 	movDistance = powOfN;
 	this->imageName = imageName;
 	image();
-	playerRec.setSize(sf::Vector2f((float)powOfN, (float)powOfN * 2));
+	sound();
+
+	playerRec.setSize(sf::Vector2f((float)powOfN * 1.5, (float)powOfN * 2));
 	playerRec.setPosition((float)powOfN * (float)PosX, (float)powOfN * (float)PosY);
 	setOriginCenter();
 	healthbarPositionnit();
 }
 
+void Player::sound()
+{
+	if (out_of_fuel_buffer.loadFromFile("audio/status/out_of_fuel.wav"))
+		out_of_fuel_sound.setBuffer(out_of_fuel_buffer);
+	    out_of_fuel_sound.setVolume(20);
+}
+
 void Player::image() 
 {
+	if (out_of_fuel_texture.loadFromFile("images/status/out_of_fuel_warning.png"))
+	{
+		out_of_fuel_icon.setTexture(&out_of_fuel_texture);
+		out_of_fuel_icon.setSize({ 50, 50 });
+		out_of_fuel_icon.setPosition(sf::Vector2f(440, 755)); //fix this later(put it in the right place)
+	}
 	if (playerTexture.loadFromFile("images/spaceships/" + imageName + ".png"))
 		playerRec.setTexture(&playerTexture);
 
 	if (healthTexture.loadFromFile("images/healthbar.png"))
-	healthbar.setTexture(&healthTexture);
+	{
+		healthbar.setTexture(&healthTexture);
+		fuelbar.setTexture(&healthTexture);
+	}
 }
 
 //by default, in sfml, all "objects" start their position at the top left corner
@@ -84,7 +102,9 @@ void Player::execution(float dt)
 		{
 			desiredangle = angle - 90;
 			if (rotation > desiredangle)
+			{
 				rotation -= 1;
+			}
 			else
 			{
 				ImExecuting = false;
@@ -97,7 +117,11 @@ void Player::execution(float dt)
 		{
 			desiredangle = angle + 90;
 			if (rotation < desiredangle)
-				rotation += 1;
+			{
+			rotation += 1;
+			//rotation = lerp(rotation, angle, dt * 5);
+			}
+
 			else
 			{
 				ImExecuting = false;
@@ -109,13 +133,26 @@ void Player::execution(float dt)
 		static int counter = 0;
 		if (command == PLAYER_FORWARD)
 		{
-			if (counter <= powOfN)
+			if (counter <= powOfN && fuel > 0)
 			{
-				playerRec.move({ (float)sin(angle*3.141592653 / 180), -(float)cos(angle*3.141592653 / 180) });
+				playerRec.move({ (float)sin(angle*3.141592653 / 180)*2, -(float)cos(angle*3.141592653 / 180)*2 });
+				drainFuel(0.9);
 				counter++;
 			}
 			else
 			{
+
+				if (fuel <= 0)
+				{
+					NoFuel(true);
+					fuelEmptyWarning = true;
+				}
+				else
+				{
+					NoFuel(false);
+					fuelEmptyWarning = false;
+				}
+
 				ImExecuting = false;
 				counter = 0;
 				command = 0;
@@ -123,18 +160,15 @@ void Player::execution(float dt)
 		}
 
 		static bool isFiringCannon = false;
-		 cannon.timer += dt;
 		if (command == PLAYER_SHOOT_CANNON)
 		{
 			if (!isFiringCannon)
 			{
-				isFiringCannon = true;
-				cannon.openFire(playerRec.getPosition(), angle);
+				cannon.openFire(playerRec.getPosition(), angle, dt, isFiringCannon);
 			}
 
-			if (cannon.timer > cannon.timeBetweenShots && isFiringCannon)       //ADD DELAY HERE
+			if (isFiringCannon)       //ADD DELAY HERE
 			{
-				cannon.timer = 0;
 				isFiringCannon = false;
 				ImExecuting = false;
 				counter = 0;
@@ -147,13 +181,11 @@ void Player::execution(float dt)
 		{
 			if (!isFiringAutomatic)
 			{
-				//isFiringAutomatic = true;
 				automatic.openFire(playerRec.getPosition(), angle, dt, isFiringAutomatic); //1) player position for determing the source of the ammo, 2) angle for the bullet source angle, 3) for delay between shots, 4) for determing setting to true once we fired all bullets
 			}
 
 			if (isFiringAutomatic)
 			{
-				cannon.timer = 0;
 				isFiringAutomatic = false;
 				ImExecuting = false;
 				counter = 0;
@@ -165,8 +197,8 @@ void Player::execution(float dt)
 	}
 	else
 	{
+		execute = false;
 		ImExecuting = false;
-		execute = false; 
 		N_inst = 0;
 		commands.clear();
 	}
@@ -181,21 +213,65 @@ void Player::drawHealth(sf::RenderWindow& window)
 	window.draw(healthbar);
 }
 
-void Player::hurt(int n)
+void Player::drawFuel(sf::RenderWindow & window)
+{
+	fuelbar.setSize(sf::Vector2f(15, fuel));  //FUEL DISPLAY
+	window.draw(fuelbar);
+
+	if (fuelEmptyWarning)
+	{
+		drawWarningFuel(window);
+	}
+}
+
+void Player::hurt(float n)
 {
 	if(health >= 0)
 	health -= n;
 }
 
-void Player::heal(int n)
+void Player::heal(float n)
 {
-	if (health <= 4)
+	if (health <= 125) //its hardcoded for now
 		health += n;
+}
+
+void Player::replenishFuel(float n)
+{
+	if (fuel <= 60)
+		fuel += n;
+}
+
+void Player::drainFuel(float n)
+{
+	if (fuel > 0)
+		fuel -= n;
+}
+
+void Player::NoFuel(bool set)
+{
+	if (set)
+	{
+		out_of_fuel_sound.play();
+		out_of_fuel_sound.setLoop(set);
+	}
+	else
+	{
+		out_of_fuel_sound.stop();
+		out_of_fuel_sound.setLoop(set);
+	}
+}
+
+void Player::drawWarningFuel(sf::RenderWindow& window)
+{
+	window.draw(out_of_fuel_icon);
 }
 
 void Player::healthbarPositionnit()
 {
 	healthbar.setPosition(sf::Vector2f(440, 695));
+	fuelbar.setPosition(sf::Vector2f(427, 816));
+	fuelbar.setRotation(-180); //so that it drains from top to bottom
 }
 
 void Player::drawProjectile(sf::RenderWindow& window)

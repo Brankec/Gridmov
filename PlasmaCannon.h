@@ -8,15 +8,13 @@ public:
 	PlasmaCannon();
 
 public:
-	void openFire(const sf::Vector2f& playerPosition, float angle);
+	void openFire(const sf::Vector2f& playerPosition, float angle, float dt, bool& isFiring);
 	void drawProjectile(sf::RenderWindow& window);
 	void updateProjectile(float angle, float dt);
 
 public:
 	//setup
 	void Tier1();
-
-	float timer = 0;//for delay in player class at PLAYER SHOOT CANNON case
 
 private:
 	void setOriginCenter();
@@ -28,12 +26,13 @@ private:
 	void setSizeWeapon(int n);
 	void setRateOfFire(float time);
 	void setProjectileSpeed(float n);
+	void setProjectileSize(sf::Vector2f size);
 
 private:
 	sf::Clock m_projectileTimer;
 
 	sf::Texture projectileTexture;
 
-
+	int amountFired = 0;
 };
 

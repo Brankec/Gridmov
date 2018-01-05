@@ -12,12 +12,13 @@ public:
 	//void update(sf::Vector2f& velocity);
 	void drawProjectile(sf::RenderWindow& window);
 	void updateProjectile(float angle, float dt);
+	sf::Vector2f getProjectilePosition();
 
 public:
 	//setup
 	void Tier1();
 
-	float timer = 0;//for delay in player class at PLAYER SHOOT CANNON case
+	
 
 private:
 	void setOriginCenter();
@@ -30,6 +31,7 @@ private:
 	void setRateOfFire(float time);
 	void setProjectileSpeed(float n);
 	void setAmountShotsFired(int n);
+	void setProjectileSize(sf::Vector2f size);
 
 private:
 	sf::Clock m_projectileTimer;

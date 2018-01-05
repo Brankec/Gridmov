@@ -5,16 +5,21 @@
 class Projectile
 {
     public:
-		Projectile(const sf::Vector2f& position, float projectileSpeed, float yaw, sf::Texture& texture);
+		Projectile(const sf::Vector2f& position, float yaw, float projectileSpeed, sf::Vector2f projectileSize, sf::Texture& texture);
 
     public:
         void update(float angle, float dt);
 		void drawBullet(sf::RenderWindow& window);
-		std::string pos();
+		sf::Vector2f pos();
+		bool isDed(); //determing if the bullet is "dead" or "alive"(it destroys it in weapon class)
 
-		sf::Vector2f bulletVelocity;
-		sf::RectangleShape bulletRec;
-	    sf::Texture bulletTexture;
+		sf::Vector2f projectileVelocity;
+		sf::RectangleShape projectileRec;
+	    sf::Texture projectileTexture;
+
+		float ageLimit = 1; //age limit
+		float age = 0; //current age
+
 };
 
 #endif // BULLET_H_INCLUDED
