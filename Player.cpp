@@ -136,12 +136,11 @@ void Player::execution(float dt)
 			if (counter <= powOfN && fuel > 0)
 			{
 				playerRec.move({ (float)sin(angle*3.141592653 / 180)*2, -(float)cos(angle*3.141592653 / 180)*2 });
-				drainFuel(0.9);
+				drainFuel(0.01);
 				counter++;
 			}
 			else
 			{
-
 				if (fuel <= 0)
 				{
 					NoFuel(true);
@@ -167,7 +166,7 @@ void Player::execution(float dt)
 				cannon.openFire(playerRec.getPosition(), angle, dt, isFiringCannon);
 			}
 
-			if (isFiringCannon)       //ADD DELAY HERE
+			if (isFiringCannon)       
 			{
 				isFiringCannon = false;
 				ImExecuting = false;
@@ -213,14 +212,14 @@ void Player::drawHealth(sf::RenderWindow& window)
 	window.draw(healthbar);
 }
 
-void Player::drawFuel(sf::RenderWindow & window)
+void Player::drawFuel(sf::RenderWindow & window, float dt)
 {
 	fuelbar.setSize(sf::Vector2f(15, fuel));  //FUEL DISPLAY
 	window.draw(fuelbar);
 
 	if (fuelEmptyWarning)
 	{
-		drawWarningFuel(window);
+		drawWarningFuel(window, dt);
 	}
 }
 
@@ -262,9 +261,21 @@ void Player::NoFuel(bool set)
 	}
 }
 
-void Player::drawWarningFuel(sf::RenderWindow& window)
+void Player::drawWarningFuel(sf::RenderWindow& window, float dt)
 {
-	window.draw(out_of_fuel_icon);
+	timer -= dt;
+	if (timer > 0)
+	{
+		window.draw(out_of_fuel_icon);
+	}
+	else if(timer > -1.2)
+	{
+		//
+	}
+	else
+	{
+		timer = 1.2;
+	}
 }
 
 void Player::healthbarPositionnit()
