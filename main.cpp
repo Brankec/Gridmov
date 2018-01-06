@@ -73,13 +73,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,
 					view.zoom(0.95f);
 			}
 		}
-		//LoadTextures();
 		if (player.execute)
 			player.execution(dt.asSeconds());
 		player.update(player.angle, dt.asSeconds());
 
-		//if(player.automatic.projectilePosition().x != NULL)
-		//window.setTitle(std::to_string(player.automatic.projectilePosition().x));
+
 
 		//writing our instructions to a text display
 		instructionText.Text.setString(player.commands);
@@ -129,7 +127,7 @@ void draw(sf::RenderWindow& window, float dt)
 	window.draw(monitor.sprite);
 
 	player.drawHealth(window);
-	player.drawFuel(window);
+	player.drawFuel(window, dt);
 
 	window.draw(plate.sprite);
 	window.draw(instructionText.Text);

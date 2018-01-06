@@ -19,13 +19,13 @@ public:
 	float lerp(float v0, float v1, float t);
 
 	void drawHealth(sf::RenderWindow& window);
-	void drawFuel(sf::RenderWindow& window);
+	void drawFuel(sf::RenderWindow& window, float dt);
 	void hurt(float n);
 	void heal(float n);
 	void replenishFuel(float n);
 	void drainFuel(float n);
 	void NoFuel(bool set);
-	void drawWarningFuel(sf::RenderWindow& window);
+	void drawWarningFuel(sf::RenderWindow& window, float dt);
 
 	void healthbarPositionnit();
 
@@ -66,12 +66,13 @@ public:
 	float angle = 0; //very important for artillery aim
 	float rotation;
 
+	float timer = 1.2;
 
 	int powOfN;
 
 public:
-	float health = 125;
-	float fuel = 60;
+	float health = 125, healthMAX = 125;
+	float fuel = 60, fuelMAX = 60;
 	bool fuelEmptyWarning = false;
 };
 

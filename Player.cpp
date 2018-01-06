@@ -12,7 +12,7 @@ Player::Player( int PosX, int PosY, int n, std::string imageName) :
 	image();
 	sound();
 
-	playerRec.setSize(sf::Vector2f((float)powOfN * 1.5, (float)powOfN * 2));
+	playerRec.setSize(sf::Vector2f((float)powOfN * 2, (float)powOfN * 2));
 	playerRec.setPosition((float)powOfN * (float)PosX, (float)powOfN * (float)PosY);
 	setOriginCenter();
 	healthbarPositionnit();
@@ -22,7 +22,7 @@ void Player::sound()
 {
 	if (out_of_fuel_buffer.loadFromFile("audio/status/out_of_fuel.wav"))
 		out_of_fuel_sound.setBuffer(out_of_fuel_buffer);
-	    out_of_fuel_sound.setVolume(20);
+	    out_of_fuel_sound.setVolume(5);
 }
 
 void Player::image() 
@@ -136,12 +136,13 @@ void Player::execution(float dt)
 			if (counter <= powOfN && fuel > 0)
 			{
 				playerRec.move({ (float)sin(angle*3.141592653 / 180)*2, -(float)cos(angle*3.141592653 / 180)*2 });
-				drainFuel(0.01);
+				drainFuel(0.01); //fuel consumption
 				counter++;
 			}
 			else
 			{
-				if (fuel <= 0)
+
+				if (fuel <= (fuelMAX * 0.3))
 				{
 					NoFuel(true);
 					fuelEmptyWarning = true;
@@ -263,14 +264,14 @@ void Player::NoFuel(bool set)
 
 void Player::drawWarningFuel(sf::RenderWindow& window, float dt)
 {
-	timer -= dt;
+	timer -= dt; //starts at 1.2 by default
 	if (timer > 0)
 	{
 		window.draw(out_of_fuel_icon);
 	}
 	else if(timer > -1.2)
 	{
-		//
+		//draw nothing
 	}
 	else
 	{
@@ -280,7 +281,7 @@ void Player::drawWarningFuel(sf::RenderWindow& window, float dt)
 
 void Player::healthbarPositionnit()
 {
-	healthbar.setPosition(sf::Vector2f(440, 695));
+	healthbar.setPosition(sf::Vector2f(433, 695));
 	fuelbar.setPosition(sf::Vector2f(427, 816));
 	fuelbar.setRotation(-180); //so that it drains from top to bottom
 }

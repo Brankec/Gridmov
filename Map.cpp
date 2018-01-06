@@ -14,29 +14,30 @@ void Map::setOriginCenter()
 
 void Map::loadTiles()
 {
+	
 	loadCounter = sf::Vector2i(0, 0);
-
+	//openfile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 	if (openfile.is_open())
 	{
 		std::string tileLocation;
 		openfile >> tileLocation;
 
-		if(tileTexture.loadFromFile(tileLocation))
-		tile.setTexture(&tileTexture);
+		if (tileTexture.loadFromFile(tileLocation))
+			tile.setTexture(&tileTexture);
+
+		int tileIndex = 0;
 
 		tile.setSize(sf::Vector2f((float)powOfN, (float)powOfN));
-		while (!openfile.eof())
+		//openfile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
+		while (openfile.good())
 		{
-			std::string str;
-			openfile >> str;
-			char x = str[0], y = str[2];
-			if (!isdigit(x) || !isdigit(y))
-				map[loadCounter.x][loadCounter.y] = sf::Vector2i(-1, -1);
-			else
-				map[loadCounter.x][loadCounter.y] = sf::Vector2i(x - '0', y - '0');
+			//int tileIndex;
+			openfile >> tileIndex;
+			//map[loadCounter.x][loadCounter.y] = Sprite_sheet_coordinates(tileIndex);
 
 			if (openfile.peek() == '\n')
 			{
+				openfile.get();
 				loadCounter.x = 0;
 				loadCounter.y++;
 			}
@@ -44,11 +45,14 @@ void Map::loadTiles()
 				loadCounter.x++;
 		}
 		loadCounter.y++;
+		
 	}
+	
 }
 
 void Map::setTilePositions(sf::RenderWindow& window)
 {
+	
 	for (int i = 0; i < loadCounter.x; i++)
 	{
 		for (int j = 0; j < loadCounter.y; j++)
@@ -56,11 +60,20 @@ void Map::setTilePositions(sf::RenderWindow& window)
 			if (map[i][j].x != -1 && map[i][j].y != -1)
 			{
 				tile.setPosition(i * (float)powOfN, j * (float)powOfN);
-				//tile.setTextureRect(sf::IntRect(map[i][j].x * 32, map[i][j].y * 32, 32, 32));
-				tile.setTextureRect(sf::IntRect(0, 0, 405, 411));
+				tile.setTextureRect(sf::IntRect(map[i][j].x * 32, map[i][j].y * 32, 32, 32));
+				//tile.setTextureRect(sf::IntRect(0, 0, 405, 411));
 				window.draw(tile);
 			}
 		}
 	}
+	
+}
+
+sf::Vector2i Map::Sprite_sheet_coordinates(int tileIndex) 
+{
+	sf::Vector2i coords;
+	coords.x = (tileIndex % 2) * 64;
+	coords.y = (tileIndex / 2) * 64;
+	return coords;
 }
 

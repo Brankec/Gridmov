@@ -14,6 +14,7 @@ public:
 	void loadTiles();
 	void setTilePositions(sf::RenderWindow& window);
 	void setOriginCenter();
+	sf::Vector2i Sprite_sheet_coordinates(int tileIndex);
 
 public:
 	int powOfN;
