@@ -1,8 +1,10 @@
 #include "Map.h"
 
-Map::Map(std::string fileName, int n) : openfile("images/" + fileName + ".txt")
+Map::Map(std::string fileName, int n, sf::Vector2i amountOfTiles, sf::Vector2i tileSize) : openfile("images/" + fileName + ".txt")
 {
 	this->powOfN = (int)pow(2, n);
+	this->amountOfTiles = amountOfTiles;
+	this->tileSize = tileSize;
 	loadTiles();
 	setOriginCenter();
 }
@@ -14,9 +16,6 @@ void Map::setOriginCenter()
 
 void Map::loadTiles()
 {
-	
-	loadCounter = sf::Vector2i(0, 0);
-	//openfile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 	if (openfile.is_open())
 	{
 		std::string tileLocation;
@@ -28,40 +27,34 @@ void Map::loadTiles()
 		int tileIndex = 0;
 
 		tile.setSize(sf::Vector2f((float)powOfN, (float)powOfN));
-		//openfile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 		while (openfile.good())
 		{
 			//int tileIndex;
 			openfile >> tileIndex;
-			//map[loadCounter.x][loadCounter.y] = Sprite_sheet_coordinates(tileIndex);
+			tempMap.push_back(Sprite_sheet_coordinates(tileIndex));
 
 			if (openfile.peek() == '\n')
 			{
-				openfile.get();
-				loadCounter.x = 0;
-				loadCounter.y++;
+				map.push_back(tempMap);
+				tempMap.clear();
 			}
-			else
-				loadCounter.x++;
+			
 		}
-		loadCounter.y++;
-		
 	}
-	
 }
 
 void Map::setTilePositions(sf::RenderWindow& window)
 {
 	
-	for (int i = 0; i < loadCounter.x; i++)
+	for (int i = 0; i < map.size(); i++)
 	{
-		for (int j = 0; j < loadCounter.y; j++)
+		for (int j = 0; j < map[i].size(); j++)
 		{
 			if (map[i][j].x != -1 && map[i][j].y != -1)
 			{
-				tile.setPosition(i * (float)powOfN, j * (float)powOfN);
-				tile.setTextureRect(sf::IntRect(map[i][j].x * 32, map[i][j].y * 32, 32, 32));
-				//tile.setTextureRect(sf::IntRect(0, 0, 405, 411));
+				tile.setPosition(j * (float)powOfN, i * (float)powOfN);
+				map[i][j];
+				tile.setTextureRect(sf::IntRect(map[i][j].x / amountOfTiles.x, map[i][j].y * 0 /*/ amountOfTiles.y*/, tileSize.x / amountOfTiles.x, tileSize.y / amountOfTiles.y)); //map[i][j] holds coordinates/size of that index, not the index itself
 				window.draw(tile);
 			}
 		}
@@ -72,8 +65,8 @@ void Map::setTilePositions(sf::RenderWindow& window)
 sf::Vector2i Map::Sprite_sheet_coordinates(int tileIndex) 
 {
 	sf::Vector2i coords;
-	coords.x = (tileIndex % 2) * 64;
-	coords.y = (tileIndex / 2) * 64;
+	coords.x = (tileIndex % amountOfTiles.x) * tileSize.x;
+	coords.y = (tileIndex / amountOfTiles.y) * tileSize.y;
 	return coords;
 }
 

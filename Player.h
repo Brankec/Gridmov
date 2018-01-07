@@ -31,14 +31,10 @@ public:
 
 	void drawProjectile(sf::RenderWindow& window);
 	void update(float angle, float dt);
-	void preloadTexture();
+
+	void WallCollisionDetection();
 
 public:
-	sf::RenderWindow* window;
-
-
-	sf::Texture artilleryTexture;
-
 	sf::RectangleShape playerRec;
 	sf::Texture playerTexture;
 
@@ -59,7 +55,7 @@ public:
 
 	bool execute;
 
-	int movDistance;
+	//int movDistance;
 	std::string commands;
 	int instructions = 0;
 	int N_inst = 0;
@@ -74,5 +70,7 @@ public:
 	float health = 125, healthMAX = 125;
 	float fuel = 60, fuelMAX = 60;
 	bool fuelEmptyWarning = false;
+	float speed = 1;
+	int movDistance = 64;
 };
 

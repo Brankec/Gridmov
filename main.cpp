@@ -21,7 +21,7 @@ decoration background("space.png", 0, 0, 1.f, 1.f), //(1) texture name, (2-3) po
 	       monitor("monitor.png"),
 	       plate("plate.png");
 
-Player player(3, 3, 7, "spaceship");//(1-2) Position, (3) size, (4) name of the image
+Player player(40, 70, 7, "spaceship");//(1-2) Position, (3) size, (4) name of the image
 
 button button1(30, 790, sf::Vector2f(70, 70), "arrowUp"), //(1-2) Position, (3) size, (4) name of the image
        button2(130, 790, sf::Vector2f(70, 70), "arrowLeft"),
@@ -33,7 +33,7 @@ button button1(30, 790, sf::Vector2f(70, 70), "arrowUp"), //(1-2) Position, (3) 
 
 text instructionText; //text that will be used for displaying our instructions
 
-Map test("Map1", 6), goal("Map2", 6);
+Map walls("Map1", 6, { 2,1 }, { 84, 42 });
 
 sf::View view;
 sf::View followPlayer;
@@ -54,6 +54,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,
 
 	sf::Clock deltaClock;
 	sf::Time dt;
+
+	sf::Vector2f camera;
+	view.setCenter(player.playerRec.getPosition());
+
 	while (window.isOpen())
 	{
 		dt = deltaClock.restart();
@@ -77,7 +81,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,
 			player.execution(dt.asSeconds());
 		player.update(player.angle, dt.asSeconds());
 
+		camera += (player.playerRec.getPosition() - view.getCenter()) * dt.asSeconds() * (float)1; //smooth camera follow
 
+		view.setCenter(camera);
 
 		//writing our instructions to a text display
 		instructionText.Text.setString(player.commands);
@@ -111,12 +117,9 @@ void draw(sf::RenderWindow& window, float dt)
 	//player zone
 	//window.setView(view);
 	window.draw(background.sprite); 
-	test.setTilePositions(window);//decorations for the background
-
-
 	window.setView(view);
-	goal.setTilePositions(window);
-	//window.setView(followPlayer);
+	walls.setTilePositions(window);//walls 
+
 	window.draw(player.playerRec);
 	//artillery
 	player.drawProjectile(window);

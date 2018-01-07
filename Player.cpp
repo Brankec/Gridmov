@@ -12,7 +12,7 @@ Player::Player( int PosX, int PosY, int n, std::string imageName) :
 	image();
 	sound();
 
-	playerRec.setSize(sf::Vector2f((float)powOfN * 2, (float)powOfN * 2));
+	playerRec.setSize(sf::Vector2f((float)powOfN, (float)powOfN));
 	playerRec.setPosition((float)powOfN * (float)PosX, (float)powOfN * (float)PosY);
 	setOriginCenter();
 	healthbarPositionnit();
@@ -131,17 +131,17 @@ void Player::execution(float dt)
 		}
 		
 		static int counter = 0;
+		speed = 5;
 		if (command == PLAYER_FORWARD)
 		{
-			if (counter <= powOfN && fuel > 0)
+			if (counter <= movDistance/speed && fuel > 0)
 			{
-				playerRec.move({ (float)sin(angle*3.141592653 / 180)*2, -(float)cos(angle*3.141592653 / 180)*2 });
-				drainFuel(0.01); //fuel consumption
+				playerRec.move({ (float)sin(angle*3.141592653 / 180) * speed, -(float)cos(angle*3.141592653 / 180) * speed});
+				drainFuel(0.01 * speed); //fuel consumption
 				counter++;
 			}
 			else
 			{
-
 				if (fuel <= (fuelMAX * 0.3))
 				{
 					NoFuel(true);
@@ -250,13 +250,19 @@ void Player::drainFuel(float n)
 
 void Player::NoFuel(bool set)
 {
+	static bool fuelWarningTriggerOnce = true; //so that it doesnt get constantly trigger/replayed as I move
 	if (set)
 	{
-		out_of_fuel_sound.play();
-		out_of_fuel_sound.setLoop(set);
+		if (fuelWarningTriggerOnce)
+		{
+			fuelWarningTriggerOnce = false;
+			out_of_fuel_sound.play();
+			out_of_fuel_sound.setLoop(set);
+		}
 	}
 	else
 	{
+		fuelWarningTriggerOnce = true;
 		out_of_fuel_sound.stop();
 		out_of_fuel_sound.setLoop(set);
 	}
@@ -298,9 +304,8 @@ void Player::update(float angle, float dt)
 	automatic.update(angle, dt);
 }
 
-void Player::preloadTexture()
+void Player::WallCollisionDetection()
 {
-	artilleryTexture.loadFromFile("images/bullet.png");
-}
 
+}
 

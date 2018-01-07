@@ -1,14 +1,17 @@
 #include <SFML\Graphics.hpp>
-#include <fstream>
+#include <iostream>
+#include <array>
 #include <cctype>
-#include <string>
+#include <map>
 #include <vector>
+#include <string>
+#include <fstream>
 
 #pragma once
 class Map
 {
 public:
-	Map(std::string fileName, int n);
+	Map(std::string fileName, int n, sf::Vector2i amountOfTiles, sf::Vector2i tileSize);
 
 public:
 	void loadTiles();
@@ -21,8 +24,11 @@ public:
 	sf::Texture tileTexture;
 	sf::RectangleShape tile;
 
-	sf::Vector2i map[100][100]; //ok
+	std::vector<std::vector<sf::Vector2i>> map; 
+	std::vector<sf::Vector2i> tempMap;
 	sf::Vector2i loadCounter;
+	sf::Vector2i tileSize;
+	sf::Vector2i amountOfTiles;
 
 	//open the file containing the tile name and tile positions
 	std::ifstream openfile;
