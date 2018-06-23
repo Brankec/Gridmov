@@ -18,4 +18,4 @@ After you've given it a set of instructions click on the cog(bottom right corner
 
 
 
-***The goal of this project was to learn how to move an object based on set of recorded instruction executed in order.***
+***The goal of this project was to learn how to move an object based on set of recorded instructions executed in order.***
